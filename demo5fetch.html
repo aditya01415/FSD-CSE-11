@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Fetch in JS</title>
+</head>
+<body>
+    <style>
+        table {
+            margin:auto;
+            padding:20px;
+            border:1px solid black;
+            background-color: aqua;
+        }
+    </style>
+
+    <table border="solid black">
+        <thead>
+            <tr>
+            <th>S.NO.</th>
+            <th>Title</th>
+            <th>Categories</th>
+            <th>Description</th>
+            <th>Price</th>
+            </tr>
+        </thead>
+        <tbody id="data">
+
+        </tbody>
+    </table>
+    <script>
+        const URL="https://dummyjson.com/products"
+        async function loadProduct(){
+            try{
+                const ele1=document.getElementById("data");
+                const res= await fetch(URL);
+                const data =await res.json();
+                console.log("Data:",data)
+                 data.products.map((i)=>{
+                ele1.innerHTML +=`<tr>
+                    <td>${i.id}</td>
+                    <td>${i.title}</td>
+                    <td>${i.category}</td>
+                    <td>${i.description}</td>
+                    <td>${i.price}</td>
+                    </tr>`
+        }
+    )
+            }
+            catch(err) {
+                console.log("Error:",err)
+            }
+        }
+        loadProduct()
+        
+       
+    </script>
+    
+</body>
+</html>
