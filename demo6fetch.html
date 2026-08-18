@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Fetch</title>
+</head>
+<style>
+    table {
+        width:80vw;
+        margin:auto;
+        background-color: aqua;
+    }
+    #btn {
+        background-color: green;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+<body>
+    <h1 align="center">Product List</h1>
+    <table border="solid green">
+        <thead>
+            <tr>
+                <th>S.NO.</th>
+                <th>Title</th>
+                <th>Image</th>
+                <th>Categories</th>
+                <th>Rating</th>
+                <th>Price</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+        <tbody id="data">
+        </tbody>
+    </table>
+</body>
+<script>
+    let rate =0;
+    async function loadProduct () {
+        const URL ="https://dummyjson.com/products?limit=100&skip=5"
+        try {
+            const res = await fetch(URL);
+            console.log("res=",res);
+            const data = await res.json();
+            console.log("data=",data.products);
+            let rows = "";
+            data.products.map((i,index)=>(
+                rows=rows+`
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${i.title}</td>
+                    <td><img src="${i.images[0]}" width="50" height="50"></td>
+                    <td>${i.category}</td>
+                    <td>${i.rating}</td>
+                    <td>₹${(i.price*rate).toFixed(2)}</td>
+                    <td>${i.stock}</td>
+                    <td><button onclick="addToCart(${i.id})" id="btn">Add to Cart</button></td>
+                </tr>
+                `
+            ))
+            const el = document.getElementById("data");
+            el.innerHTML=rows;
+        }
+        catch(err) {
+            console.log("Error:",err)
+        }
+
+    }
+
+    async function getRate() {
+        const URL ="https://open.er-api.com/v6/latest/USD";
+        try {
+            const res =await fetch(URL);
+            const data = await res.json();
+            console.log("INRrate=",data.rates.INR);
+            return data.rates.INR;
+        }
+        catch(err) {
+            console.log("Error=",err);
+        }
+    }
+    const test = async()=>{
+    rate=await getRate();
+    console.log("rate=",rate);
+    }
+    test();
+    loadProduct();
+</script>
+</html>
