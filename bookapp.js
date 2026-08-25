@@ -5,9 +5,6 @@ const bookData = [
     {image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqbRblGS-9lwfKFSpZGMChU9hWTOs2umBr1V9_gTjIWQ&s",price:"₹499"},
 ];
 function Book(props) {
-   
-
-
     const div = document.createElement("div");
     div.setAttribute("class", "card");
 
