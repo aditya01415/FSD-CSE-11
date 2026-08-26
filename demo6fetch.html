@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,11 @@
 </head>
 <style>
     table {
-        width:80vw;
-        margin:auto;
+        width: 80vw;
+        margin: auto;
         background-color: aqua;
     }
+
     #btn {
         background-color: green;
         color: white;
@@ -20,6 +22,7 @@
         cursor: pointer;
     }
 </style>
+
 <body>
     <h1 align="center">Product List</h1>
     <table border="solid green">
@@ -32,62 +35,132 @@
                 <th>Rating</th>
                 <th>Price</th>
                 <th>Stock</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody id="data">
         </tbody>
     </table>
+
+    <h1 align="center">Cart</h1>
+    <table border="solid green">
+        <thead>
+            <tr>
+                <th>S.NO.</th>
+                <th>Title</th>
+                <th>Image</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody id="cartData">
+        </tbody>
+    </table>
+
+    <h2 align="center">Total Price: ₹<span id="totalPrice">0</span></h2>
+    <div align="center" style="margin-bottom: 20px;">
+        <button id="btn" onclick="pay()">Pay Now</button>
+    </div>
 </body>
 <script>
-    let rate =0;
-    async function loadProduct () {
-        const URL ="https://dummyjson.com/products?limit=100&skip=5"
+    let rate = 0;
+    let allProducts = [];
+    let cart = [];
+
+    async function loadProduct() {
+        const URL = "https://dummyjson.com/products?limit=100&skip=5"
         try {
             const res = await fetch(URL);
-            console.log("res=",res);
+            console.log("res=", res);
             const data = await res.json();
-            console.log("data=",data.products);
+            console.log("data=", data.products);
+            allProducts = data.products;
             let rows = "";
-            data.products.map((i,index)=>(
-                rows=rows+`
+            data.products.map((i, index) => (
+                rows = rows + `
                 <tr>
                     <td>${index + 1}</td>
                     <td>${i.title}</td>
                     <td><img src="${i.images[0]}" width="50" height="50"></td>
                     <td>${i.category}</td>
                     <td>${i.rating}</td>
-                    <td>₹${(i.price*rate).toFixed(2)}</td>
+                    <td>₹${(i.price * rate).toFixed(2)}</td>
                     <td>${i.stock}</td>
                     <td><button onclick="addToCart(${i.id})" id="btn">Add to Cart</button></td>
                 </tr>
                 `
             ))
             const el = document.getElementById("data");
-            el.innerHTML=rows;
+            el.innerHTML = rows;
         }
-        catch(err) {
-            console.log("Error:",err)
+        catch (err) {
+            console.log("Error:", err)
         }
 
     }
 
     async function getRate() {
-        const URL ="https://open.er-api.com/v6/latest/USD";
+        const URL = "https://open.er-api.com/v6/latest/USD";
         try {
-            const res =await fetch(URL);
+            const res = await fetch(URL);
             const data = await res.json();
-            console.log("INRrate=",data.rates.INR);
+            console.log("INRrate=", data.rates.INR);
             return data.rates.INR;
         }
-        catch(err) {
-            console.log("Error=",err);
+        catch (err) {
+            console.log("Error=", err);
         }
     }
-    const test = async()=>{
-    rate=await getRate();
-    console.log("rate=",rate);
+    const test = async () => {
+        rate = await getRate();
+        console.log("rate=", rate);
     }
     test();
     loadProduct();
+
+    function addToCart(id) {
+        let product = allProducts.find((item) => item.id === id);
+        let existing = cart.find((item) => item.id === id);
+        if (existing) {
+            existing.qty += 1;
+        } else {
+            cart.push({ ...product, qty: 1 });
+        }
+        displayCart();
+    }
+
+    function displayCart() {
+        let rows = "";
+        let total = 0;
+        cart.map((i, index) => {
+            let itemTotal = i.price * rate * i.qty;
+            total += itemTotal;
+            rows += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${i.title}</td>
+                <td><img src="${i.images[0]}" width="50" height="50"></td>
+                <td>₹${(i.price * rate).toFixed(2)}</td>
+                <td>${i.qty}</td>
+                <td>₹${itemTotal.toFixed(2)}</td>
+            </tr>
+            `;
+        });
+        document.getElementById("cartData").innerHTML = rows;
+        document.getElementById("totalPrice").innerText = total.toFixed(2);
+    }
+
+    function pay() {
+        if (cart.length === 0) {
+            alert("Cart is empty!");
+        } else {
+            let total = document.getElementById("totalPrice").innerText;
+            alert("Payment Successful of ₹" + total);
+            cart = [];
+            displayCart();
+        }
+    }
 </script>
+
 </html>
