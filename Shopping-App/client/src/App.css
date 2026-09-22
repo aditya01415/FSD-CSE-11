@@ -11,7 +11,7 @@
 .Navbar{
     width: 100%;
     height: 4vh;
-    background-color: #bc2929;
+    background-color: #a6bc29;
     color: white;
     display: flex;
     justify-content: space-evenly;
@@ -31,8 +31,10 @@
     background-color: #fcfafa;
     color: rgb(10, 10, 10);
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
     gap: 28px;
-    align-items: start;
 }
 .footer{
     width: 100%;
