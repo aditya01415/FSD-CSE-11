@@ -1,0 +1,29 @@
+.counter {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    background-color: #2563eb;
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #1d4ed8;
+}
+
+.id {
+    min-width: 32px;
+    color: #222;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+}
